@@ -32,29 +32,28 @@ public class PatientController {
     }
 
     /**
-     * Connect user
+     * Get patient
      *
-     * @param id    email
-     * @return User object
+     * @param id patient id
+     * @return patient object
      */
     @GetMapping(value = "/getPatient")
     @ResponseStatus(HttpStatus.OK)
     public Patient getPatient(@RequestParam() Integer id) {
-        // get person
+        // get patient
         Optional<Patient> patient = patientService.getPatient(id);
-        // if person don't exist send error message
-        if (patient == null) {
-            logger.error("GET user -> connectUser /**/ HttpStatus : " + HttpStatus.NOT_FOUND + " " +
-                    "/**/ Message :  User email " + id + " are wrong");
+        // if patient don't exist send error message
+        if (patient.isEmpty()) {
+            logger.error("GET patient -> getPatient /**/ HttpStatus : " + HttpStatus.NOT_FOUND + " " +
+                    "/**/ Message :  patient id " + id + " is wrong");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "Wrong email: " + patient );
+                    "Wrong patient: " + patient);
         }
 
-       logger.info("GET person -> connectUser /**/ HttpStatus : " + HttpStatus.OK + " /**/ " +
+        logger.info("GET patient -> getPatient /**/ HttpStatus : " + HttpStatus.OK + " /**/ " +
                 "Result : '{}'.", patient.toString());
         return patient.get();
     }
-
 
     /**
      * Get all patients
