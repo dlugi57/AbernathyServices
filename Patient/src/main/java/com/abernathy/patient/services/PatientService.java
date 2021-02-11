@@ -9,4 +9,10 @@ public interface PatientService {
     List<Patient> getPatients();
 
     Optional<Patient> getPatient(Integer id);
+
+    boolean addPatient(Patient patient);
+
+    boolean updatePatient(Patient patient);
+
+    boolean deletePatient(Integer id);
 }

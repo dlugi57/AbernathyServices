@@ -38,9 +38,72 @@ public class PatientServiceImpl implements PatientService{
         return patientDao.findAll();
     }
 
+    /**
+     * Get patient
+     *
+     * @param id patient id
+     * @return patient object
+     */
     @Override
     public Optional<Patient> getPatient(Integer id) {
         return patientDao.findById(id);
     }
+
+    /**
+     * Add patient
+     *
+     * @param patient patient object
+     * @return true when success
+     */
+    @Override
+    public boolean addPatient(Patient patient) {
+        try {
+            if (patientDao.save(patient).getId() > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            logger.info(e.toString());
+        }
+
+        return false;
+    }
+
+    /**
+     * Update patient
+     *
+     * @param patient patient object
+     * @return true when success
+     */
+    @Override
+    public boolean updatePatient(Patient patient) {
+        if (patientDao.existsById(patient.getId())) {
+
+            return patientDao.save(patient).getId() > 0;
+
+        }
+        return false;
+    }
+
+    /**
+     * Delete patient
+     *
+     * @param id patient object
+     * @return true when success
+     */
+    @Override
+    public boolean deletePatient(Integer id) {
+        if (patientDao.existsById(id)) {
+            try {
+                patientDao.deleteById(id);
+
+                return true;
+
+            } catch (Exception e) {
+                logger.info(e.toString());
+            }
+        }
+        return false;
+    }
+
 
 }
