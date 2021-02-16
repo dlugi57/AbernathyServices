@@ -21,33 +21,17 @@ public class HomeController {
     /**
      * Home page
      * @param model model of view
-     //* @param principal get user info
      * @return home page
      */
     @RequestMapping("/")
     public String home(Model model) {
         DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar calendar = Calendar.getInstance();
-        logger.info((" is connected at "
+        logger.info(("You are connected at "
                 + format.format(calendar.getTime())));
         return "home";
     }
 
-    /**
-     * Home page
-     * @param model model of view
-     //* @param principal get user info
-     * @return admin home page
-     */
-    @RequestMapping("/admin/home")
-    public String adminHome(Model model) {
 
-        DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        Calendar calendar = Calendar.getInstance();
-        logger.info((" is connected at "
-                + format.format(calendar.getTime())));
-        return "patient/list";
-        //return "redirect:/patient/list";
-    }
 
 }
