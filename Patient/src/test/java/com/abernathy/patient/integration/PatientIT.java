@@ -44,27 +44,28 @@ public class PatientIT {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
     }
 
-    // TODO: 12/02/2021
-    //@Test
+    @Test
     public void addUser() throws Exception {
         Patient patient = new Patient();
         patient.setFirstName("Piotr");
         patient.setLastName("Dlugosz");
-        LocalDate lt = LocalDate.now();
-        patient.setBirthDate(lt);
-        patient.setSex(PatientSex.F);
+        LocalDate date = LocalDate.of(1988, 3, 17);
+        patient.setBirthDate(date);
+        patient.setSex(PatientSex.M);
         patient.setPhone("123456789");
         patient.setAddress("address");
 
         ObjectMapper mapper = new ObjectMapper();
-        mockMvc.perform(MockMvcRequestBuilders.post("/user")
+        mockMvc.perform(MockMvcRequestBuilders.post("/patient/add")
                 .contentType("application/json")
-                .content(mapper.writeValueAsString(patient)))
+                .content("{\"firstName\":\"Piotr\",\"lastName\":\"Dlugosz\"," +
+                        "\"birthDate\":\"17-03-1988\"," +
+                        "\"sex\":\"M\",\"phone\":\"123456789\",\"address\":\"address\"}"))
                 .andExpect(status().isCreated());
 
 
-        Optional<Patient> patientAdd = patientDao.findById(patient.getId());
-        patient.setId(6);
+        Optional<Patient> patientAdd = patientDao.findById(11);
+        patient.setId(11);
         assert patientAdd.orElse(null) != null;
         assertNotNull(patientAdd.orElse(null));
         assertThat(mapper.writeValueAsString(patient)).isEqualTo(mapper.writeValueAsString(patientAdd.orElse(null)));
