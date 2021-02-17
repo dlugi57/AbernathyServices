@@ -4,38 +4,58 @@
       lang="ENG">
 
 <head>
-    <title> Spring Boot </title>
+    <title> PATIENTS LIST </title>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
 
-    <!--<link rel="stylesheet" href="/css/styles.css"/>-->
 </head>
 <body>
 
 <div class="container">
-    <h3> HOME PAGE </h3>
+    <h3  class="text-center"> PATIENTS LIST </h3>
     <div class="row">
-        <div class="col-6">
+        <div class="col-12 text-center">
+            <a href="/patient/add">Add patient</a>&nbsp;|&nbsp;
             <a href="/patient/list">Patients</a>&nbsp;|&nbsp;
             <a href="/report/list">Reports</a>&nbsp;|&nbsp;
-            <a href="/note/list">Notes</a>&nbsp;|&nbsp;
-
-            <a href="/login">Login</a>&nbsp;|&nbsp;
-            <!--<a href="/user/list">User management</a>-->
-
+            <a href="/note/add">Add notes</a>&nbsp;|&nbsp;
+            <a href="/note/list">Notes</a>
         </div>
-        <div class="col-6 text-right">
-            Logged in user: <b th:inline="text" class="user">
-            [[${#httpServletRequest.remoteUser}]] </b>
-            <form th:action="@{/app-logout}" method="POST">
-                <input type="submit" value="Logout"/>
-            </form>
-        </div>
+    </div>
+
+    <div class="row"><h2>Patients list</h2></div>
+    <div class="row">
+        <a href="/patient/add" class="btn btn-primary btn-sm">Add New</a>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Firstname</th>
+                <th>Lastname</th>
+                <th>Birthdate</th>
+                <th>Sex</th>
+                <th>Address</th>
+                <th>Phone</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="patient : ${patients}">
+                <td style="width: 10%" th:text="${patient.id}"></td>
+                <td th:text="${patient.firstName}"></td>
+                <td th:text="${patient.lastName}"></td>
+                <td th:text="${patient.birthDate}"></td>
+                <td th:text="${patient.sex}"></td>
+                <td th:text="${patient.address}"></td>
+                <td th:text="${patient.phone}"></td>
+                <td style="width: 15%" class="text-center">
+                    <a th:href="@{/patient/update/{id}(id=${patient.id})}">Edit</a>&nbsp;|&nbsp;
+                    <a th:href="@{/patient/delete/{id}(id=${patient.id})}">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
-
-<!--<p>
-    <a href="/login">Login</a> or create one <a href="/user/list">User management</a>
-</p>-->
 </body>
 </html>
