@@ -43,7 +43,7 @@ public class PatientController {
      */
     @PostMapping(value = "/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> addPatient(@Valid @RequestBody Patient patient) {
+    public boolean addPatient(@Valid @RequestBody Patient patient) {
 
         // if user already exist send status and error message
         if (!patientService.addPatient(patient)) {
@@ -60,18 +60,18 @@ public class PatientController {
         logger.info("POST patient -> addPatient /**/ HttpStatus : " + HttpStatus.CREATED + " /**/ " +
                 "Result : '{}'.", location);
 
-        return ResponseEntity.created(location).build();
+        return true;
     }
 
     /**
-     * Add patient
+     * Update patient
      *
      * @param patient patient object
      * @return status and uri with new created patient
      */
     @PutMapping(value = "/update")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> updatePatient(@Valid @RequestBody Patient patient) {
+    public boolean updatePatient(@Valid @RequestBody Patient patient) {
 
         // if user already exist send status and error message
         if (!patientService.updatePatient(patient)) {
@@ -88,7 +88,7 @@ public class PatientController {
         logger.info("POST patient -> updatePatient /**/ HttpStatus : " + HttpStatus.CREATED + " /**/ " +
                 "Result : '{}'.", location);
 
-        return ResponseEntity.created(location).build();
+        return true;
     }
 
     /**
@@ -98,7 +98,7 @@ public class PatientController {
      */
     @DeleteMapping(value = "/delete")
     @ResponseStatus(HttpStatus.OK)
-    public void deletePatient(@RequestParam Integer id) {
+    public boolean deletePatient(@RequestParam Integer id) {
         // if there is no patient send status and error message
         if (!patientService.deletePatient(id)) {
             logger.error("DELETE patient -> deletePatient /**/ Result : " + HttpStatus.NOT_FOUND
@@ -106,6 +106,7 @@ public class PatientController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This patient don't exist");
         }
         logger.info("DELETE patient -> deletePatient /**/ HttpStatus : " + HttpStatus.OK);
+        return true;
     }
 
     /**

@@ -43,7 +43,7 @@ class PatientControllerTest {
                         "\"birthDate\":\"17-10-2012\", \"sex\":\"M\"}")
                 .contentType("application/json"))
                 .andDo(print())
-                .andExpect(header().string("Location", "http://localhost/patient/add/?firstName=UserFirstName&lastName=UserLastName"))
+                .andExpect(content().string("true"))
                 .andExpect(status().isCreated());
 
     }
@@ -71,8 +71,7 @@ class PatientControllerTest {
                         "\"birthDate\":\"17-10-2012\", \"sex\":\"M\"}")
                 .contentType("application/json"))
                 .andDo(print())
-                .andExpect(header().string("Location", "http://localhost/patient/update" +
-                        "/?firstName=UserFirstName&lastName=UserLastName"))
+                .andExpect(content().string("true"))
                 .andExpect(status().isCreated());
     }
 
@@ -97,6 +96,7 @@ class PatientControllerTest {
                 .param("id", "1")
                 .contentType("application/json"))
                 .andDo(print())
+                .andExpect(content().string("true"))
                 .andExpect(status().isOk());
     }
 

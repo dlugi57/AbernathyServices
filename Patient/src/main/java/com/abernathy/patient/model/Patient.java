@@ -23,8 +23,6 @@ import java.util.Date;
 @Entity
 public class Patient {
 
-    //DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -34,14 +32,13 @@ public class Patient {
     @NotBlank(message = "firstName is mandatory")
     @Size(max = 30, message = "First Name should be maximum 30 characters")
     String firstName;
-
+    // TODO: 16/02/2021 research NotNull NotBlank NotEmpty also check @column ctrl + space
     @Column(length = 30)
     @NotNull(message = "lastName is mandatory")
     @NotBlank(message = "lastName is mandatory")
     @Size(max = 30, message = "First Name should be maximum 30 characters")
     String lastName;
 
-    //@DateTimeFormat(pattern = "dd/MM/yyyy")
     @JsonFormat(pattern="dd-MM-yyyy")
     @NotNull(message = "Birth date is mandatory")
     private LocalDate birthDate;
