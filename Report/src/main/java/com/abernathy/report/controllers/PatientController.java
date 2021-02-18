@@ -64,7 +64,7 @@ public class PatientController {
      * @return Empty form
      */
     @GetMapping("/patient/add")
-    public String addBidForm(Patient patient) {
+    public String addPatientForm(Patient patient) {
         return "patient/add";
     }
 
