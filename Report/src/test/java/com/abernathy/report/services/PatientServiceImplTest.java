@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
@@ -78,19 +77,6 @@ class PatientServiceImplTest {
 
     @Test
     void getPatients_Invalid() {
-        List<Patient> patientList = new ArrayList<>();
-
-        //GIVEN
-        Patient patientTest = new Patient();
-        patientTest.setId(1);
-        patientTest.setFirstName(firstname);
-        patientTest.setLastName(lastname);
-        patientTest.setBirthDate(birthdate);
-        patientTest.setSex(sex);
-        patientTest.setPhone(phone);
-        patientTest.setAddress(address);
-
-        patientList.add(patientTest);
 
         // GIVEN
         given(patientProxy.getPatients()).willReturn(Collections.emptyList());
@@ -225,7 +211,7 @@ class PatientServiceImplTest {
     @Test
     void deletePatient() {
         // GIVEN
-          given(patientProxy.deletePatient(anyInt())).willReturn(true);
+        given(patientProxy.deletePatient(anyInt())).willReturn(true);
         // WHEN
         boolean patient = patientService.deletePatient(1);
         // THEN
