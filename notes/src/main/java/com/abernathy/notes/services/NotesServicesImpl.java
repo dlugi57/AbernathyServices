@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 
-public class NotesServicesImpl implements NotesService{
+public class NotesServicesImpl implements NotesService {
 
     static final Logger logger = LogManager
             .getLogger(NotesServicesImpl.class);
@@ -47,6 +49,65 @@ public class NotesServicesImpl implements NotesService{
         }
 
         return false;
+    }
+
+    /**
+     * Update note
+     *
+     * @param note note object
+     * @return true when success
+     */
+    @Override
+    public boolean updateNote(Note note) {
+        note.setUpdateDate(LocalDate.now());
+        if (notesDao.existsById(note.getId())) {
+
+            return notesDao.save(note).getId() != null;
+
+        }
+        return false;
+    }
+
+    /**
+     * Delete note
+     *
+     * @param id note
+     * @return true when success
+     */
+    @Override
+    public boolean deleteNote(String id) {
+        if (notesDao.existsById(id)) {
+            try {
+                notesDao.deleteById(id);
+
+                return true;
+
+            } catch (Exception e) {
+                logger.info(e.toString());
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Get note
+     *
+     * @param id note id
+     * @return note object
+     */
+    @Override
+    public Optional<Note> getNote(String id) {
+        return notesDao.findById(id);
+    }
+
+    /**
+     * Get all notes
+     *
+     * @return list of notes
+     */
+    @Override
+    public List<Note> getNotes() {
+        return notesDao.findAll();
     }
 
 }
