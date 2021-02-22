@@ -75,7 +75,7 @@ public class PatientController {
 
         // if user already exist send status and error message
         if (!patientService.updatePatient(patient)) {
-            logger.error("POST patient -> " +
+            logger.error("PUT patient -> " +
                     "updatePatient /**/ HttpStatus : " + HttpStatus.NOT_FOUND + " /**/ Message : " +
                     " This patient don't exist");
 
