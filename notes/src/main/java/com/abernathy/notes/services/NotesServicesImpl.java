@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-
 public class NotesServicesImpl implements NotesService {
 
     static final Logger logger = LogManager
