@@ -109,4 +109,14 @@ public class NotesServicesImpl implements NotesService {
         return notesDao.findAll();
     }
 
+    /**
+     * Get notes by patient id
+     *
+     * @return list of notes
+     */
+    @Override
+    public List<Note> getNotesByPatientId(Integer patientId) {
+        return notesDao.findAllByPatientId(patientId);
+    }
+
 }

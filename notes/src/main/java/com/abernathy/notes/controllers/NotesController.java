@@ -146,4 +146,28 @@ public class NotesController {
         return notes;
     }
 
+    /**
+     * Get note by patient id
+     *
+     * @param id patient id
+     * @return note object
+     */
+    @GetMapping(value = "/getByPatientId")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Note> getNotesByPatientId(@RequestParam() Integer id) {
+        List<Note> notes = notesService.getNotesByPatientId(id);
+
+        if (notes == null || notes.isEmpty()) {
+
+            logger.error("GET getByPatientId -> getNotesByPatientId /**/ Result : " + HttpStatus.NOT_FOUND + " /**/ " +
+                    "Message : There is no notes in the data base");
+
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no notes in the " +
+                    "data base");
+        }
+        logger.info("GET getByPatientId -> getNotesByPatientId /**/ HttpStatus : " + HttpStatus.OK + " /**/ Result : '{}'.", notes.toString());
+
+        return notes;
+    }
+
 }

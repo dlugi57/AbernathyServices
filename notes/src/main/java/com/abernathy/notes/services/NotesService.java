@@ -15,4 +15,6 @@ public interface NotesService {
     Optional<Note> getNote(String id);
 
     List<Note> getNotes();
+
+    List<Note> getNotesByPatientId(Integer patientId);
 }
