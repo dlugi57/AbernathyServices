@@ -19,16 +19,6 @@ public class PatientServiceImpl implements PatientService {
     PatientProxy patientProxy;
 
     /**
-     * Field injection of patient dao
-     *
-     * @param patientProxy patient dao
-     */
-   // @Autowired
-   // public void setPatientDao(PatientProxy patientProxy) {
-    //    this.patientProxy = patientProxy;
-    //}
-
-    /**
      * Get all patients
      *
      * @return list of patients

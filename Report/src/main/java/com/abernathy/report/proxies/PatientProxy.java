@@ -12,6 +12,12 @@ import java.util.List;
 @FeignClient(name = "patient", url = "${CLIENT_REWARDS_BASE_URL:http://localhost:8084}")
 public interface PatientProxy {
 
+    /**
+     * Add patient
+     *
+     * @param patient patient object
+     * @return status and uri with new created patient
+     */
     @PostMapping(value = "/patient/add")
     @ResponseStatus(HttpStatus.CREATED)
     boolean addPatient(@Valid @RequestBody Patient patient);
