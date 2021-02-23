@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -71,6 +71,41 @@ class NotesServicesImplTest {
         List<Note> patientsTest = notesService.getNotes();
         // THEN
         verify(notesDao, times(1)).findAll();
+        assertThat(patientsTest).isEqualTo(Collections.emptyList());
+
+    }
+
+    @Test
+    void getNotesByPatientId() {
+        Note note = new Note();
+        note.setPatientId(1);
+        note.setNote("test note");
+        LocalDate lt = LocalDate.now();
+        note.setUpdateDate(lt);
+        List<Note> notes = new ArrayList<>();
+        notes.add(note);
+        notes.add(note);
+        notes.add(note);
+
+        // GIVEN
+        given(notesDao.findAllByPatientId(anyInt())).willReturn(notes);
+        // WHEN
+        List<Note> patientsTest = notesService.getNotesByPatientId(1);
+        // THEN
+        verify(notesDao, times(1)).findAllByPatientId(anyInt());
+        assertThat(patientsTest.size()).isEqualTo(3);
+
+    }
+
+    @Test
+    void getNotesByPatientId_Invalid() {
+
+        // GIVEN
+        given(notesDao.findAllByPatientId(anyInt())).willReturn(Collections.emptyList());
+        // WHEN
+        List<Note> patientsTest = notesService.getNotesByPatientId(1);
+        // THEN
+        verify(notesDao, times(1)).findAllByPatientId(anyInt());
         assertThat(patientsTest).isEqualTo(Collections.emptyList());
 
     }

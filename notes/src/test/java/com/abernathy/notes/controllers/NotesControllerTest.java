@@ -16,14 +16,11 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(NotesController.class)
@@ -179,5 +176,48 @@ class NotesControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    void getNotesByPatientId() throws Exception {
+        Note note = new Note();
+        note.setPatientId(1);
+        note.setNote("test note");
+        LocalDate lt = LocalDate.now();
+        note.setUpdateDate(lt);
+        List<Note> notes = new ArrayList<>();
+        notes.add(note);
+        notes.add(note);
+        notes.add(note);
+        when(service.getNotesByPatientId(anyInt())).thenReturn(notes);
+
+        this.mockMvc.perform(get("/patHistory/getByPatientId")
+                .param("id", String.valueOf(3))
+                .contentType("application/json"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)));
+
+    }
+
+    @Test
+    void getNotesByPatientIdNull() throws Exception {
+
+        when(service.getNotesByPatientId(anyInt())).thenReturn(null);
+
+        this.mockMvc.perform(get("/patient/getByPatientId")
+                .param("id", String.valueOf(3))
+                .contentType("application/json"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getNotesByPatientIdEmpty() throws Exception {
+
+        when(service.getNotesByPatientId(anyInt())).thenReturn(Collections.emptyList());
+
+        this.mockMvc.perform(get("/patient/getByPatientId")
+                .param("id", String.valueOf(3))
+                .contentType("application/json"))
+                .andExpect(status().isNotFound());
+    }
 
 }
