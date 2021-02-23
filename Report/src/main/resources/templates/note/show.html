@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      lang="ENG">
+
+<head>
+    <title> PATIENT DETAILS </title>
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+
+</head>
+<body>
+
+
+
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand"  href="/">Abernathy</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <!--<a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>-->
+                <a class="nav-item nav-link"  href="/patient/add">Add patient</a>
+                <a class="nav-item nav-link"  href="/patient/list">Patients</a>
+                <a class="nav-item nav-link"  th:href="@{/note/add/{id}(id=${patient.id})}">Add Note</a>
+
+            </div>
+        </div>
+    </nav>
+
+    <h2  class="text-center mt-5 mb-5" th:text="${patient.firstName}+ ${patient.lastName}" > PATIENT </h2>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    Patient details
+                </div>
+                <div class="card-body">
+                    <p class="card-text font-weight-bold">First name: <span class="font-weight-normal" th:text="${patient.firstName}"></span></p>
+                    <p class="card-text font-weight-bold">Last name: <span class="font-weight-normal" th:text="${patient.lastName}"></span></p>
+                    <p class="card-text font-weight-bold">Sex: <span class="font-weight-normal" th:text="${patient.sex}"></span></p>
+                    <p class="card-text font-weight-bold">Phone: <span class="font-weight-normal" th:text="${patient.phone}"></span></p>
+                    <p class="card-text font-weight-bold">Birth Date: <span class="font-weight-normal" th:text="${patient.birthDate}"></span></p>
+                    <p class="card-text font-weight-bold">Address: <span class="font-weight-normal" th:text="${patient.address}"></span></p>
+
+                </div>
+                <div class="card-footer text-muted">
+                    <a  th:href="@{/patient/update/{id}(id=${patient.id})}" class="btn btn-warning float-right">Edit</a>
+                    <a  th:href="@{/patient/delete/{id}(id=${patient.id})}" class="btn btn-danger float-left">Delete</a>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    Notes
+                </div>
+                <div class="card-body">
+                    <!--<a href="/patient/add" class="btn btn-primary btn-sm">Add New</a>-->
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Note</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="note : ${notes}">
+                            <td th:text="${note.updateDate}"></td>
+                            <td th:text="${note.note}"></td>
+
+                            <td style="width: 15%" class="text-center">
+                                <a  th:href="@{/note/update/{id}(id=${note.id})}">Edit</a>&nbsp;|&nbsp;
+                                <a  th:href="@{/note/delete/{id}(id=${note.id})}">Delete</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer text-muted">
+                    <a th:href="@{/note/add/{id}(id=${patient.id})}" class="btn float-right btn-success">Add</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
+
+
+</div>
+
+</body>
+</html>
