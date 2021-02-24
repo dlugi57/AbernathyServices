@@ -25,7 +25,13 @@ public class NoteServiceImpl implements NoteService{
      */
     @Override
     public List<Note> getNotesByPatientId(Integer patientId) {
-        return noteProxy.getNotesByPatientId(patientId);
+        try {
+            return noteProxy.getNotesByPatientId(patientId);
+
+        } catch (Exception e) {
+            logger.info(e.toString());
+        }
+        return null;
     }
 
     /**
