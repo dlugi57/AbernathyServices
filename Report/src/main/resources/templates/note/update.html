@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Update Note</title>
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <a class="navbar-brand" href="/">Abernathy</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup"
+            aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link" href="/patient/add">Add patient</a>
+            <a class="nav-item nav-link" href="/patient/list">Patients</a>
+            <a class="nav-item nav-link" th:href="@{/note/show/{id}(id=${patient.id})}">Back</a>
+
+        </div>
+    </div>
+</nav>
+
+
+<div class="container">
+
+    <h2 class="text-center mt-5 mb-5" th:text="${patient.firstName} + ' ' + ${patient.lastName}">
+    </h2>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <form action="#" th:action="@{/note/update/{id}(id=${note.id})}"
+                  th:object="${note}" method="post" class="form-horizontal "
+                  style="width: 100%">
+                <div class="card">
+                    <div class="card-header">
+                        Update note
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <input type="hidden" th:field="*{id}">
+                                        <input type="hidden" th:field="*{patientId}">
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="">
+                                        <textarea class="form-control" type="text"
+                                                  th:field="*{note}" id="note"
+                                                  rows="10"  style="width: 100%"></textarea>
+                                        <p class="text-danger"
+                                           th:if="${#fields.hasErrors('note')}"
+                                           th:errors="*{note}"></p>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+                    <div class="card-footer text-muted">
+
+                        <input class="btn btn-primary float-right" type="submit"
+                               value="Update">
+                        <a class="btn btn-danger  float-left mr-2" href="/">Cancel</a>
+                        <a class="btn  btn-warning float-left" th:href="@{/note/show/{id}(id=${patient.id})}">Back</a>
+
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+
+    </div>
+</div>
+
+<footer class="footer mt-3 py-3 bg-light  fixed-bottom">
+    <div class="container">
+        <span class="text-muted">All rights reserved Dlugosz Piotr @OpenClassrooms</span>
+    </div>
+</footer>
+</body>
+</html>
