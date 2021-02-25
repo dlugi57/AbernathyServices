@@ -3,7 +3,6 @@ package com.abernathy.report.controllers;
 import com.abernathy.report.model.Note;
 import com.abernathy.report.model.Patient;
 import com.abernathy.report.services.NoteService;
-import com.abernathy.report.services.PatientNoteService;
 import com.abernathy.report.services.PatientService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +31,7 @@ public class NoteController {
     /**
      * Field injection of patient note service
      *
-     * @param noteService patient note service
+     * @param noteService    note service
      * @param patientService patient service
      */
     @Autowired
@@ -99,9 +98,9 @@ public class NoteController {
     /**
      * Add note
      *
-     * @param note note object
-     * @param result  when validation goes wrong result
-     * @param model   model of view
+     * @param note   note object
+     * @param result when validation goes wrong result
+     * @param model  model of view
      * @return when success list of note if not add form
      */
     @PostMapping("/note/validate")
@@ -109,10 +108,8 @@ public class NoteController {
         // check data valid and save to db, after saving return bid list
         if (!result.hasErrors()) {
             noteService.addNote(note);
-           // model.addAttribute("notes", noteService.getNotesByPatientId(note.getPatientId()));
             return "redirect:/note/show/" + note.getPatientId();
         }
-        // model.addAttribute("notes", noteService.getNotesByPatientId(note.getPatientId()));
 
         return "note/add";
     }
@@ -139,14 +136,14 @@ public class NoteController {
     /**
      * Update note
      *
-     * @param id      id of note to update
-     * @param note note object
-     * @param result  when validation goes wrong result
-     * @param model   model of view
+     * @param id     id of note to update
+     * @param note   note object
+     * @param result when validation goes wrong result
+     * @param model  model of view
      * @return when success list of notes if not update form
      */
     @PostMapping("/note/update/{id}")
-    public String updatePatient(@PathVariable("id") String id, @Valid Note note,
+    public String updateNote(@PathVariable("id") String id, @Valid Note note,
                                 BindingResult result, Model model) {
         //  check required fields, if valid call service to update Bid and return list Bid
         if (result.hasErrors()) {
@@ -155,7 +152,6 @@ public class NoteController {
 
         note.setId(id);
         noteService.addNote(note);
-        //model.addAttribute("patients", patientService.getPatients());
 
         return "redirect:/note/show/" + note.getPatientId();
     }
@@ -172,7 +168,6 @@ public class NoteController {
         // Find note by Id and delete the note, return to notes list
         Note note = noteService.getNote(id);
         noteService.deleteNote(note.getId());
-        //model.addAttribute("patients", patientService.getPatients());
         return "redirect:/note/show/" + note.getPatientId();
     }
 
