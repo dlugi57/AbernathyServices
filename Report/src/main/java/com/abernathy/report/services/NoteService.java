@@ -14,4 +14,6 @@ public interface NoteService {
     boolean updateNote(Note note);
 
     boolean deleteNote(String id);
+
+    boolean deleteNotesByPatientId(Integer id);
 }

@@ -8,8 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service
-public class NoteServiceImpl implements NoteService{
+public class NoteServiceImpl implements NoteService {
 
     static final Logger logger = LogManager
             .getLogger(NoteServiceImpl.class);
@@ -87,6 +88,31 @@ public class NoteServiceImpl implements NoteService{
         if (noteProxy.deleteNote(id)) {
             return true;
         }
+        return false;
+    }
+
+    /**
+     * Delete notes by patient id
+     *
+     * @param patientId patient id
+     * @return true when success
+     */
+    @Override
+    public boolean deleteNotesByPatientId(Integer patientId) {
+
+        try {
+            List<Note> notes = noteProxy.getNotesByPatientId(patientId);
+            if (!notes.isEmpty()) {
+                for (Note note : notes) {
+                    noteProxy.deleteNote(note.getId());
+                }
+                return true;
+            }
+
+        } catch (Exception e) {
+            logger.info(e.toString());
+        }
+
         return false;
     }
 }
