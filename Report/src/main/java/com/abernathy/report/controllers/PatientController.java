@@ -1,6 +1,7 @@
 package com.abernathy.report.controllers;
 
 import com.abernathy.report.model.Patient;
+import com.abernathy.report.services.NoteService;
 import com.abernathy.report.services.PatientService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +27,8 @@ public class PatientController {
 
     // initialize objects
     PatientService patientService;
+    NoteService noteService;
+
 
     /**
      * Field injection of patient service
@@ -33,8 +36,9 @@ public class PatientController {
      * @param patientService patient service
      */
     @Autowired
-    public PatientController(PatientService patientService) {
+    public PatientController(PatientService patientService, NoteService noteService) {
         this.patientService = patientService;
+        this.noteService = noteService;
     }
 
 
@@ -140,6 +144,7 @@ public class PatientController {
         // Find patient by Id and delete the patient, return to patient list
         Patient patient = patientService.getPatient(id);
         patientService.deletePatient(patient.getId());
+        noteService.deleteNotesByPatientId(patient.getId());
         model.addAttribute("patients", patientService.getPatients());
         // TODO: 24/02/2021 delete all of notes  
         return "redirect:/patient/list";

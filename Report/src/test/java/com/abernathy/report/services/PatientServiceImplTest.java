@@ -28,7 +28,7 @@ import static org.mockito.Mockito.verify;
 class PatientServiceImplTest {
 
     @TestConfiguration
-    static class BankAccountServiceImplTestContextConfiguration {
+    static class PatientServiceImplTestTestContextConfiguration {
         @Bean
         public PatientService patientService() {
             return new PatientServiceImpl();

@@ -156,7 +156,7 @@ class PatientControllerTest {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         String formattedString = birthdate.format(formatter);
         //WHEN
-        //when(patientService.addPatient(anyInt())).thenReturn(Optional.of(bidListTest));
+        when(patientService.addPatient(any(Patient.class))).thenReturn(true);
 
         //THEN
         mockMvc.perform(post("/patient/update/1")
