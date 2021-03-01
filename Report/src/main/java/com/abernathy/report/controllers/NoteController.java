@@ -2,8 +2,10 @@ package com.abernathy.report.controllers;
 
 import com.abernathy.report.model.Note;
 import com.abernathy.report.model.Patient;
+import com.abernathy.report.model.Report;
 import com.abernathy.report.services.NoteService;
 import com.abernathy.report.services.PatientService;
+import com.abernathy.report.services.ReportService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ public class NoteController {
     // initialize objects
     NoteService noteService;
     PatientService patientService;
+    ReportService reportService;
 
 
     /**
@@ -35,9 +38,11 @@ public class NoteController {
      * @param patientService patient service
      */
     @Autowired
-    public NoteController(NoteService noteService, PatientService patientService) {
+    public NoteController(NoteService noteService, PatientService patientService,
+                          ReportService reportService) {
         this.noteService = noteService;
         this.patientService = patientService;
+        this.reportService = reportService;
     }
 
     /**
@@ -53,6 +58,9 @@ public class NoteController {
         List<Note> notes = noteService.getNotesByPatientId(id);
         Patient patient = patientService.getPatient(id);
 
+        Report report = reportService.calculateReport(patient,notes);
+
+        model.addAttribute("report", report);
         model.addAttribute("patient", patient);
         model.addAttribute("notes", notes);
 
