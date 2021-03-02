@@ -48,20 +48,21 @@ public class NotesIT {
         Note note = new Note();
         note.setPatientId(3);
         note.setNote("test test IT");
-        LocalDate date = LocalDate.of(1988, 3, 18);
-        note.setUpdateDate(date);
+        LocalDate lt = LocalDate.now();
+        note.setUpdateDate(lt);
 
         ObjectMapper mapper = new ObjectMapper();
         mockMvc.perform(MockMvcRequestBuilders.post("/patHistory/add")
                 .contentType("application/json")
-                .content("{\"patientId\":\"1\",\"note\":\"test note\"}"))
+                .content("{\"patientId\":\"3\",\"note\":\"test test IT\"," +
+                        "\"id\":\"603429806bf78d08faabfbc6\"}"))
                 .andExpect(status().isCreated());
 
 
         Optional<Note> noteAdd = notesDao.findById("603429806bf78d08faabfbc6");
         note.setId("603429806bf78d08faabfbc6");
         //assert noteAdd.orElse(null) != null;
-        assertNotNull(noteAdd.orElse(null));
+        //assertNotNull(noteAdd.orElse(null));
         assertThat(mapper.writeValueAsString(note)).isEqualTo(mapper.writeValueAsString(noteAdd.orElse(null)));
     }
 
