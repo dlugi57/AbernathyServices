@@ -25,7 +25,15 @@ public class PatientServiceImpl implements PatientService {
      */
     @Override
     public List<Patient> getPatients() {
-        return patientProxy.getPatients();
+
+        try {
+
+            return patientProxy.getPatients();
+
+        } catch (Exception e) {
+            logger.info(e.toString());
+        }
+        return null;
     }
 
     /**
@@ -36,7 +44,14 @@ public class PatientServiceImpl implements PatientService {
      */
     @Override
     public Patient getPatient(Integer id) {
-        return patientProxy.getPatient(id);
+
+        try {
+            return patientProxy.getPatient(id);
+
+        } catch (Exception e) {
+            logger.info(e.toString());
+        }
+        return null;
     }
 
     /**
