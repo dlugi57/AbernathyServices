@@ -23,6 +23,9 @@ public class ReportServiceImpl implements ReportService {
 
     private static List<Note> notes;
 
+    /**
+     * List of trigger terms
+     */
     private String[] triggerTerms = {"HEMOGLOBINE A1C", "MICROALBUMINE",
             "TAILLE", "POIDS", "FUME", "ANORMA", "CHOLESTEROL", "VERTIGE", "RECHUTE", "REACTION",
             "ANTICORPS"};
@@ -33,22 +36,57 @@ public class ReportServiceImpl implements ReportService {
     @Autowired
     PatientService patientService;
 
-    ReportServiceImpl(NoteService noteService, PatientService patientService) {
-        this.noteService = noteService;
-        this.patientService = patientService;
-    }
-
+    /**
+     * Calculate the report by user id
+     *
+     * @param patientId patient id
+     * @return report object
+     */
     public Report calculateReportByPatientId(Integer patientId) {
 
         List<Note> notes = noteService.getNotesByPatientId(patientId);
         Patient patient = patientService.getPatient(patientId);
-        if (!notes.isEmpty() && patient != null) {
+        if ((notes != null && !notes.isEmpty()) && patient != null) {
             return calculateReport(patient, notes);
         }
 
         return null;
     }
 
+    /**
+     * Calculate the report by user id
+     *
+     * @param patientLastName patient id
+     * @return report object
+     */
+    public Report calculateReportByPatientLastName(String patientLastName) {
+
+        List<Patient> patients = patientService.getPatients();
+
+        for (Patient patient : patients) {
+            String cleanPatient =
+                    removeDiacriticalMarks(patient.getLastName().toUpperCase().trim());
+            String cleanComparePatient = removeDiacriticalMarks(patientLastName.toUpperCase().trim());
+
+            if (cleanPatient.equals(cleanComparePatient) ) {
+                List<Note> notes = noteService.getNotesByPatientId(patient.getId());
+
+                if ((notes != null && !notes.isEmpty()) && patient != null) {
+                    return calculateReport(patient, notes);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Calculate report by patient and list of notes
+     *
+     * @param patient patient object
+     * @param notes   notes list
+     * @return report object
+     */
     public Report calculateReport(Patient patient, List<Note> notes) {
 
         if (patient == null && notes.isEmpty()) {
@@ -60,23 +98,32 @@ public class ReportServiceImpl implements ReportService {
         return getReport(patient, triggerTermsCount);
     }
 
-    private boolean isPatientMale(PatientSex sex) {
+    /**
+     * check if the patient is male
+     *
+     * @param sex sex of patient
+     * @return true when male
+     */
+    public boolean isPatientMale(PatientSex sex) {
         if (sex == PatientSex.F) {
             return false;
         }
         return true;
     }
 
-
+    /**
+     * Count trigger terms
+     *
+     * @param notes list of notes
+     * @return count of trigger terms
+     */
     private AtomicReference<Integer> countTriggerTerms(List<Note> notes) {
-        // TODO: 01/03/2021 is that ok
         AtomicReference<Integer> countTerms = new AtomicReference<>(0);
         for (Note note : notes) {
             String clearNote = removeDiacriticalMarks(note.getNote().toUpperCase().trim());
             Stream.of(triggerTerms).forEach(triggerTerm -> {
 
                 if (clearNote.contains(triggerTerm.toUpperCase().trim())) {
-                    System.out.println(triggerTerm.toUpperCase().trim());
                     countTerms.getAndSet(countTerms.get() + 1);
                 }
 
@@ -85,11 +132,26 @@ public class ReportServiceImpl implements ReportService {
         return countTerms;
     }
 
+    /**
+     * Remove accents from string
+     *
+     * @param string note
+     * @return clean string
+     */
     private static String removeDiacriticalMarks(String string) {
         return Normalizer.normalize(string, Normalizer.Form.NFD)
                 .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
     }
 
+    /**
+     * Build report message
+     *
+     * @param firstName first name
+     * @param lastName  last name
+     * @param age       age of patient
+     * @param status    status of illness
+     * @return string with message composed
+     */
     private String buildMessage(String firstName, String lastName, int age, ReportStatus status) {
         StringBuilder sb = new StringBuilder();
         sb.append("Patient: ");
@@ -99,31 +161,37 @@ public class ReportServiceImpl implements ReportService {
         sb.append(" (age ");
         sb.append(age);
         sb.append(") diabetes assessment is: ");
-        sb.append(status);
+        sb.append(status.getText());
         String s = sb.toString();
         return s;
     }
 
-    private Report getReport(Patient patient, int count) {
+    /**
+     * Get status report by trigger terms
+     *
+     * @param patient patient object
+     * @param count   count of trigger terms
+     * @return report object
+     */
+    public Report getReport(Patient patient, int count) {
 
         boolean isMale = isPatientMale(patient.getSex());
         int age = calculateAge(patient.getBirthDate());
         ReportStatus status = ReportStatus.NONE;
         // borderline
-        if ( age > 30 && (count >= 2 && count < 6)) {
+        if (age > 30 && (count >= 2 && count < 6)) {
             status = ReportStatus.BORDERLINE;
-
         }
         // danger
-        else if ((isMale && age < 30 && (count == 3 || count == 4)) || (!isMale && age < 30 && (count >= 4 && count <= 6)) || (age > 30 && (count == 6 || count == 7))){
+        else if ((isMale && age < 30 && (count == 3 || count == 4)) || (!isMale && age < 30 && (count >= 4 && count <= 6)) || (age > 30 && (count == 6 || count == 7))) {
             status = ReportStatus.IN_DANGER;
         }
         // early onset
-        else if ((isMale && age < 30 && count == 5)|| (!isMale && age < 30 && count >= 7) || (age > 30 && count >= 8) ){
+        else if ((isMale && age < 30 && count == 5) || (!isMale && age < 30 && count >= 7) || (age > 30 && count >= 8)) {
             status = ReportStatus.EARLY_ONSET;
         }
 
-        String message = buildMessage(patient.getFirstName(), patient.getLastName(),age,status);
+        String message = buildMessage(patient.getFirstName(), patient.getLastName(), age, status);
         Report report = new Report();
         report.setMessage(message);
         report.setStatus(status);
@@ -131,4 +199,6 @@ public class ReportServiceImpl implements ReportService {
 
         return report;
     }
+
+
 }
