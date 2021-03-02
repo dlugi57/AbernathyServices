@@ -34,11 +34,54 @@
     </h2>
 
     <div class="row">
-        <div class="col-md-12">
-            <div class="card text-white bg-primary mb-3">
-                <div class="card-header text-center" th:text="${report.status}">status</div>
+        <div class="col-md-12" th:switch="${report.status.toString()}">
+
+            <div th:case="'NONE'" class="card text-white bg-success mb-3">
+                <div class="card-header text-center"
+                     th:text="${report.status.getText()}">status
+                </div>
                 <div class="card-body">
-                    <h5 class="card-title text-center" th:text="${report.message}">message</h5>
+                    <h5 class="card-title text-center"
+                        th:text="${report.message}">message</h5>
+                </div>
+            </div>
+
+            <div th:case="'BORDERLINE'" class="card text-white bg-primary mb-3">
+                <div class="card-header text-center"
+                     th:text="${report.status.getText()}">status
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title text-center"
+                        th:text="${report.message}">message</h5>
+                </div>
+            </div>
+
+            <div th:case="'IN_DANGER'" class="card text-white bg-warning mb-3">
+                <div class="card-header text-center"
+                     th:text="${report.status.getText()}">status
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title text-center"
+                        th:text="${report.message}">message</h5>
+                </div>
+            </div>
+            <div th:case="'EARLY_ONSET'" class="card text-white bg-danger mb-3">
+                <div class="card-header text-center"
+                     th:text="${report.status.getText()}">status
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title text-center"
+                        th:text="${report.message}">message</h5>
+                </div>
+            </div>
+            <div th:case="*" class="card text-white bg-primary mb-3">
+
+                <div class="card-header text-center"
+                     th:text="${report.status.getText()}">status
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title text-center"
+                        th:text="${report.message}">message</h5>
                 </div>
             </div>
 
@@ -54,19 +97,25 @@
                 </div>
                 <div class="card-body">
                     <p class="card-text font-weight-bold">First name: <span
-                            class="font-weight-normal" th:text="${patient.firstName}"></span></p>
+                            class="font-weight-normal"
+                            th:text="${patient.firstName}"></span></p>
                     <p class="card-text font-weight-bold">Last name: <span
-                            class="font-weight-normal" th:text="${patient.lastName}"></span></p>
-                    <p class="card-text font-weight-bold">Sex: <span class="font-weight-normal"
-                                                                     th:text="${patient.sex}"></span>
+                            class="font-weight-normal"
+                            th:text="${patient.lastName}"></span></p>
+                    <p class="card-text font-weight-bold">Sex: <span
+                            class="font-weight-normal"
+                            th:text="${patient.sex}"></span>
                     </p>
-                    <p class="card-text font-weight-bold">Phone: <span class="font-weight-normal"
-                                                                       th:text="${patient.phone}"></span>
+                    <p class="card-text font-weight-bold">Phone: <span
+                            class="font-weight-normal"
+                            th:text="${patient.phone}"></span>
                     </p>
                     <p class="card-text font-weight-bold">Birth Date: <span
-                            class="font-weight-normal" th:text="${patient.birthDate}"></span></p>
-                    <p class="card-text font-weight-bold">Address: <span class="font-weight-normal"
-                                                                         th:text="${patient.address}"></span>
+                            class="font-weight-normal"
+                            th:text="${patient.birthDate}"></span></p>
+                    <p class="card-text font-weight-bold">Address: <span
+                            class="font-weight-normal"
+                            th:text="${patient.address}"></span>
                     </p>
 
                 </div>
