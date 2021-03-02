@@ -60,6 +60,7 @@ public class NoteController {
 
         Report report = reportService.calculateReport(patient,notes);
 
+        // TODO: 01/03/2021 is enough to add this only to this controller
         model.addAttribute("report", report);
         model.addAttribute("patient", patient);
         model.addAttribute("notes", notes);
