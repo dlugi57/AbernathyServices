@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReportController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">report</a> &gt; <a href="index.source.html" class="el_package">com.abernathy.report.controllers</a> &gt; <span class="el_source">ReportController.java</span></div><h1>ReportController.java</h1><pre class="source lang-java linenums">package com.abernathy.report.controllers;
+
+import com.abernathy.report.model.Report;
+import com.abernathy.report.services.ReportService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+@RestController
+@RequestMapping(&quot;/assess&quot;)
+public class ReportController {
+
+<span class="fc" id="L16">    static final Logger logger = LogManager</span>
+<span class="fc" id="L17">            .getLogger(ReportController.class);</span>
+
+    // Service initialization
+    ReportService reportService;
+
+    /**
+     * Field injection of report service
+     *
+     * @param reportService initialization of report service
+     */
+    @Autowired
+<span class="fc" id="L28">    public ReportController(ReportService reportService) {</span>
+<span class="fc" id="L29">        this.reportService = reportService;</span>
+<span class="fc" id="L30">    }</span>
+
+    /**
+     * Get report by patient id
+     *
+     * @param patId patient id
+     * @return report
+     */
+    @GetMapping(value = &quot;/id&quot;)
+    @ResponseStatus(HttpStatus.OK)
+    public String getReportByPatientId(@RequestParam() Integer patId) {
+        // get report
+<span class="fc" id="L42">        Report report = reportService.calculateReportByPatientId(patId);</span>
+        // if patient don't exist send error message
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        if (report == null) {</span>
+<span class="fc" id="L45">            logger.error(&quot;GET report -&gt; getReportByPatientId /**/ HttpStatus : &quot; + HttpStatus.NOT_FOUND + &quot; &quot; +</span>
+                    &quot;/**/ Message :  patient id &quot; + patId + &quot; is wrong&quot;);
+<span class="fc" id="L47">            throw new ResponseStatusException(HttpStatus.NOT_FOUND,</span>
+                    &quot;Wrong patient: &quot; + patId);
+        }
+
+<span class="fc" id="L51">        logger.info(&quot;GET report -&gt; getReportByPatientId /**/ HttpStatus : &quot; + HttpStatus.OK + &quot; &quot; +</span>
+                &quot;/**/ &quot; +
+<span class="fc" id="L53">                &quot;Result : '{}'.&quot;, report.toString());</span>
+<span class="fc" id="L54">        return report.getMessage();</span>
+    }
+
+    /**
+     * Get report by patient last name
+     *
+     * @param familyName patient last name
+     * @return report message
+     */
+    @GetMapping(value = &quot;/familyName&quot;)
+    @ResponseStatus(HttpStatus.OK)
+    public String getReportByPatientLastname(@RequestParam() String familyName) {
+        // get report
+<span class="fc" id="L67">        Report report = reportService.calculateReportByPatientLastName(familyName);</span>
+        // if patient don't exist send error message
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (report == null) {</span>
+<span class="fc" id="L70">            logger.error(&quot;GET report -&gt; getReportByPatientLastname /**/ HttpStatus : &quot; + HttpStatus.NOT_FOUND + &quot; &quot; +</span>
+                    &quot;/**/ Message :  patient lastname &quot; + familyName + &quot; is wrong&quot;);
+<span class="fc" id="L72">            throw new ResponseStatusException(HttpStatus.NOT_FOUND,</span>
+                    &quot;Wrong patient: &quot; + familyName);
+        }
+
+<span class="fc" id="L76">        logger.info(&quot;GET report -&gt; getReportByPatientLastname /**/ HttpStatus : &quot; + HttpStatus.OK + &quot; &quot; +</span>
+                &quot;/**/ &quot; +
+<span class="fc" id="L78">                &quot;Result : '{}'.&quot;, report.toString());</span>
+<span class="fc" id="L79">        return report.getMessage();</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

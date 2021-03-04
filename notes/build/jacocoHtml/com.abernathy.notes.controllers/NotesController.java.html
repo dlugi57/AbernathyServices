@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NotesController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">notes</a> &gt; <a href="index.source.html" class="el_package">com.abernathy.notes.controllers</a> &gt; <span class="el_source">NotesController.java</span></div><h1>NotesController.java</h1><pre class="source lang-java linenums">package com.abernathy.notes.controllers;
+
+import com.abernathy.notes.model.Note;
+import com.abernathy.notes.services.NotesService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping(&quot;/patHistory&quot;)
+public class NotesController {
+<span class="fc" id="L19">    static final Logger logger = LogManager</span>
+<span class="fc" id="L20">            .getLogger(NotesController.class);</span>
+
+    // Service initialization
+    NotesService notesService;
+
+    /**
+     * Field injection of notes service
+     *
+     * @param notesService initialization of notes service
+     */
+    @Autowired
+<span class="fc" id="L31">    public NotesController(NotesService notesService) {</span>
+<span class="fc" id="L32">        this.notesService = notesService;</span>
+<span class="fc" id="L33">    }</span>
+
+    /**
+     * Add note
+     *
+     * @param note note object
+     * @return status and uri with new created patient
+     */
+    @PostMapping(value = &quot;/add&quot;)
+    @ResponseStatus(HttpStatus.CREATED)
+    public boolean addNote(@Valid @RequestBody Note note) {
+
+        // if note already exist send status and error message
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (!notesService.addNote(note)) {</span>
+<span class="fc" id="L47">            logger.error(&quot;POST note -&gt; &quot; +</span>
+                    &quot;addNote /**/ HttpStatus : &quot; + HttpStatus.CONFLICT + &quot; /**/ Message : &quot; +
+                    &quot; This note already exist&quot;);
+
+<span class="fc" id="L51">            throw new ResponseStatusException(HttpStatus.CONFLICT, &quot;This note already exist&quot;);</span>
+        }
+
+<span class="fc" id="L54">        logger.info(&quot;POST note -&gt; addNote /**/ HttpStatus : &quot; + HttpStatus.CREATED + &quot; /**/ &quot; +</span>
+                &quot;Result : '{}'.&quot;);
+
+<span class="fc" id="L57">        return true;</span>
+    }
+
+    /**
+     * Update note
+     *
+     * @param note note object
+     * @return status and uri with new created note
+     */
+    @PutMapping(value = &quot;/update&quot;)
+    @ResponseStatus(HttpStatus.CREATED)
+    public boolean updateNote(@Valid @RequestBody Note note) {
+
+        // if user already exist send status and error message
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (!notesService.updateNote(note)) {</span>
+<span class="fc" id="L72">            logger.error(&quot;PUT note -&gt; &quot; +</span>
+                    &quot;updateNote /**/ HttpStatus : &quot; + HttpStatus.NOT_FOUND + &quot; /**/ Message : &quot; +
+                    &quot; This note don't exist&quot;);
+
+<span class="fc" id="L76">            throw new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;This note don't exist&quot;);</span>
+        }
+
+<span class="fc" id="L79">        logger.info(&quot;POST note -&gt; updateNote /**/ HttpStatus : &quot; + HttpStatus.CREATED + &quot; /**/ &quot; +</span>
+                &quot;Result : '{}'.&quot;);
+
+<span class="fc" id="L82">        return true;</span>
+    }
+
+    /**
+     * Delete note
+     *
+     * @param id id of note
+     */
+    @DeleteMapping(value = &quot;/delete&quot;)
+    @ResponseStatus(HttpStatus.OK)
+    public boolean deleteNote(@RequestParam String id) {
+        // if there is no patient send status and error message
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        if (!notesService.deleteNote(id)) {</span>
+<span class="fc" id="L95">            logger.error(&quot;DELETE note -&gt; deleteNote /**/ Result : &quot; + HttpStatus.NOT_FOUND</span>
+<span class="fc" id="L96">                    + &quot; /**/ Message : This note don't exist : '{}'.&quot;, id.toString());</span>
+<span class="fc" id="L97">            throw new ResponseStatusException(HttpStatus.NOT_FOUND,</span>
+                    &quot;This note don't exist&quot;);
+        }
+<span class="fc" id="L100">        logger.info(&quot;DELETE note -&gt; deleteNote /**/ HttpStatus : &quot; + HttpStatus.OK);</span>
+<span class="fc" id="L101">        return true;</span>
+    }
+
+    /**
+     * Get note
+     *
+     * @param id note id
+     * @return note object
+     */
+    @GetMapping(value = &quot;/get&quot;)
+    @ResponseStatus(HttpStatus.OK)
+    public Note getNote(@RequestParam() String id) {
+        // get note
+<span class="fc" id="L114">        Optional&lt;Note&gt; note = notesService.getNote(id);</span>
+        // if note don't exist send error message
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        if (note.isEmpty()) {</span>
+<span class="fc" id="L117">            logger.error(&quot;GET note -&gt; getNote /**/ HttpStatus : &quot; + HttpStatus.NOT_FOUND + &quot; &quot; +</span>
+                    &quot;/**/ Message :  note id &quot; + id + &quot; is wrong&quot;);
+<span class="fc" id="L119">            throw new ResponseStatusException(HttpStatus.NOT_FOUND,</span>
+                    &quot;Wrong note: &quot; + note);
+        }
+
+<span class="fc" id="L123">        logger.info(&quot;GET note -&gt; getNote /**/ HttpStatus : &quot; + HttpStatus.OK + &quot; /**/ &quot; +</span>
+<span class="fc" id="L124">                &quot;Result : '{}'.&quot;, note.toString());</span>
+<span class="fc" id="L125">        return note.get();</span>
+    }
+
+    /**
+     * Get all notes
+     *
+     * @return List of notes
+     */
+    @GetMapping(value = &quot;/getAll&quot;)
+    public List&lt;Note&gt; getNotes() {
+<span class="fc" id="L135">        List&lt;Note&gt; notes = notesService.getNotes();</span>
+
+<span class="pc bpc" id="L137" title="2 of 4 branches missed.">        if (notes == null || notes.isEmpty()) {</span>
+
+<span class="nc" id="L139">            logger.error(&quot;GET notes -&gt; getNotes /**/ Result : &quot; + HttpStatus.NOT_FOUND + &quot; /**/ &quot; +</span>
+                    &quot;Message : There is no notes in the data base&quot;);
+
+<span class="nc" id="L142">            throw new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;There is no notes in the &quot; +</span>
+                    &quot;data base&quot;);
+        }
+<span class="fc" id="L145">        logger.info(&quot;GET notes -&gt; getNotes /**/ HttpStatus : &quot; + HttpStatus.OK + &quot; /**/ Result : '{}'.&quot;, notes.toString());</span>
+
+<span class="fc" id="L147">        return notes;</span>
+    }
+
+    /**
+     * Get note by patient id
+     *
+     * @param id patient id
+     * @return note object
+     */
+    @GetMapping(value = &quot;/getByPatientId&quot;)
+    @ResponseStatus(HttpStatus.OK)
+    public List&lt;Note&gt; getNotesByPatientId(@RequestParam() Integer id) {
+<span class="fc" id="L159">        List&lt;Note&gt; notes = notesService.getNotesByPatientId(id);</span>
+
+<span class="pc bpc" id="L161" title="2 of 4 branches missed.">        if (notes == null || notes.isEmpty()) {</span>
+
+<span class="nc" id="L163">            logger.error(&quot;GET getByPatientId -&gt; getNotesByPatientId /**/ Result : &quot; + HttpStatus.NOT_FOUND + &quot; /**/ &quot; +</span>
+                    &quot;Message : There is no notes in the data base&quot;);
+
+<span class="nc" id="L166">            throw new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;There is no notes in the &quot; +</span>
+                    &quot;data base&quot;);
+        }
+<span class="fc" id="L169">        logger.info(&quot;GET getByPatientId -&gt; getNotesByPatientId /**/ HttpStatus : &quot; + HttpStatus.OK + &quot; /**/ Result : '{}'.&quot;, notes.toString());</span>
+
+<span class="fc" id="L171">        return notes;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

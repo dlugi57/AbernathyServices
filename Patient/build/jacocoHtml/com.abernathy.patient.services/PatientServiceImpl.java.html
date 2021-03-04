@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PatientServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">patient</a> &gt; <a href="index.source.html" class="el_package">com.abernathy.patient.services</a> &gt; <span class="el_source">PatientServiceImpl.java</span></div><h1>PatientServiceImpl.java</h1><pre class="source lang-java linenums">package com.abernathy.patient.services;
+
+import com.abernathy.patient.dao.PatientDao;
+import com.abernathy.patient.model.Patient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+<span class="fc" id="L14">public class PatientServiceImpl implements PatientService{</span>
+
+<span class="fc" id="L16">    static final Logger logger = LogManager</span>
+<span class="fc" id="L17">            .getLogger(PatientServiceImpl.class);</span>
+
+    PatientDao patientDao;
+
+    /**
+     * Field injection of patient dao
+     *
+     * @param patientDao patient dao
+     */
+    @Autowired
+    public void setPatientDao(PatientDao patientDao) {
+<span class="fc" id="L28">        this.patientDao = patientDao;</span>
+<span class="fc" id="L29">    }</span>
+
+    /**
+     * Get all patients
+     *
+     * @return list of patients
+     */
+    @Override
+    public List&lt;Patient&gt; getPatients() {
+<span class="fc" id="L38">        return patientDao.findAll();</span>
+    }
+
+    /**
+     * Get patient
+     *
+     * @param id patient id
+     * @return patient object
+     */
+    @Override
+    public Optional&lt;Patient&gt; getPatient(Integer id) {
+<span class="fc" id="L49">        return patientDao.findById(id);</span>
+    }
+
+    /**
+     * Add patient
+     *
+     * @param patient patient object
+     * @return true when success
+     */
+    @Override
+    public boolean addPatient(Patient patient) {
+        try {
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">            if (patientDao.save(patient).getId() &gt; 0) {</span>
+<span class="fc" id="L62">                return true;</span>
+            }
+<span class="fc" id="L64">        } catch (Exception e) {</span>
+<span class="fc" id="L65">            logger.info(e.toString());</span>
+<span class="nc" id="L66">        }</span>
+
+<span class="fc" id="L68">        return false;</span>
+    }
+
+    /**
+     * Update patient
+     *
+     * @param patient patient object
+     * @return true when success
+     */
+    @Override
+    public boolean updatePatient(Patient patient) {
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        if (patientDao.existsById(patient.getId())) {</span>
+
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">            return patientDao.save(patient).getId() &gt; 0;</span>
+
+        }
+<span class="fc" id="L84">        return false;</span>
+    }
+
+    /**
+     * Delete patient
+     *
+     * @param id patient object
+     * @return true when success
+     */
+    @Override
+    public boolean deletePatient(Integer id) {
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        if (patientDao.existsById(id)) {</span>
+            try {
+<span class="fc" id="L97">                patientDao.deleteById(id);</span>
+
+<span class="fc" id="L99">                return true;</span>
+
+<span class="nc" id="L101">            } catch (Exception e) {</span>
+<span class="nc" id="L102">                logger.info(e.toString());</span>
+            }
+        }
+<span class="fc" id="L105">        return false;</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

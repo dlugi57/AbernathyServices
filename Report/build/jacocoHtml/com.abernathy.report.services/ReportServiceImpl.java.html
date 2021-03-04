@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReportServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">report</a> &gt; <a href="index.source.html" class="el_package">com.abernathy.report.services</a> &gt; <span class="el_source">ReportServiceImpl.java</span></div><h1>ReportServiceImpl.java</h1><pre class="source lang-java linenums">package com.abernathy.report.services;
+
+import com.abernathy.report.model.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.text.Normalizer;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
+
+import static com.abernathy.report.util.AgeCalculator.calculateAge;
+
+@Service
+<span class="fc" id="L17">public class ReportServiceImpl implements ReportService {</span>
+
+<span class="fc" id="L19">    static final Logger logger = LogManager</span>
+<span class="fc" id="L20">            .getLogger(ReportServiceImpl.class);</span>
+
+
+    /**
+     * List of trigger terms
+     */
+<span class="fc" id="L26">    private String[] triggerTerms = {&quot;HEMOGLOBINE A1C&quot;, &quot;MICROALBUMINE&quot;,</span>
+            &quot;TAILLE&quot;, &quot;POIDS&quot;, &quot;FUME&quot;, &quot;ANORMA&quot;, &quot;CHOLESTEROL&quot;, &quot;VERTIGE&quot;, &quot;RECHUTE&quot;, &quot;REACTION&quot;,
+            &quot;ANTICORPS&quot;};
+
+    @Autowired
+    NoteService noteService;
+
+    @Autowired
+    PatientService patientService;
+
+    /**
+     * Calculate the report by user id
+     *
+     * @param patientId patient id
+     * @return report object
+     */
+    public Report calculateReportByPatientId(Integer patientId) {
+
+<span class="fc" id="L44">        List&lt;Note&gt; notes = noteService.getNotesByPatientId(patientId);</span>
+<span class="fc" id="L45">        Patient patient = patientService.getPatient(patientId);</span>
+<span class="pc bpc" id="L46" title="2 of 6 branches missed.">        if ((notes != null &amp;&amp; !notes.isEmpty()) &amp;&amp; patient != null) {</span>
+<span class="fc" id="L47">            return calculateReport(patient, notes);</span>
+        }
+
+<span class="fc" id="L50">        return null;</span>
+    }
+
+    /**
+     * Calculate the report by user id
+     *
+     * @param patientLastName patient id
+     * @return report object
+     */
+    public Report calculateReportByPatientLastName(String patientLastName) {
+
+<span class="fc" id="L61">        List&lt;Patient&gt; patients = patientService.getPatients();</span>
+
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        for (Patient patient : patients) {</span>
+<span class="fc" id="L64">            String cleanPatient =</span>
+<span class="fc" id="L65">                    removeDiacriticalMarks(patient.getLastName().toUpperCase().trim());</span>
+<span class="fc" id="L66">            String cleanComparePatient = removeDiacriticalMarks(patientLastName.toUpperCase().trim());</span>
+
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">            if (cleanPatient.equals(cleanComparePatient)) {</span>
+<span class="fc" id="L69">                List&lt;Note&gt; notes = noteService.getNotesByPatientId(patient.getId());</span>
+
+<span class="pc bpc" id="L71" title="2 of 6 branches missed.">                if ((notes != null &amp;&amp; !notes.isEmpty()) &amp;&amp; patient != null) {</span>
+<span class="fc" id="L72">                    return calculateReport(patient, notes);</span>
+                }
+            }
+<span class="fc" id="L75">        }</span>
+
+<span class="fc" id="L77">        return null;</span>
+    }
+
+    /**
+     * Calculate report by patient and list of notes
+     *
+     * @param patient patient object
+     * @param notes   notes list
+     * @return report object
+     */
+    public Report calculateReport(Patient patient, List&lt;Note&gt; notes) {
+<span class="fc" id="L88">        logger.info(&quot;Start calculation&quot;);</span>
+<span class="pc bpc" id="L89" title="1 of 4 branches missed.">        if (patient == null || notes == null) {</span>
+<span class="fc" id="L90">            return null;</span>
+        }
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">        if (notes.isEmpty()) {</span>
+<span class="nc" id="L93">            return null;</span>
+        }
+
+<span class="fc" id="L96">        int triggerTermsCount = countTriggerTerms(notes).get();</span>
+
+<span class="fc" id="L98">        return getReport(patient, triggerTermsCount);</span>
+    }
+
+    /**
+     * check if the patient is male
+     *
+     * @param sex sex of patient
+     * @return true when male
+     */
+    public boolean isPatientMale(PatientSex sex) {
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (sex == PatientSex.F) {</span>
+<span class="fc" id="L109">            return false;</span>
+        }
+<span class="fc" id="L111">        return true;</span>
+    }
+
+    /**
+     * Count trigger terms
+     *
+     * @param notes list of notes
+     * @return count of trigger terms
+     */
+    private AtomicReference&lt;Integer&gt; countTriggerTerms(List&lt;Note&gt; notes) {
+<span class="fc" id="L121">        AtomicReference&lt;Integer&gt; countTerms = new AtomicReference&lt;&gt;(0);</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        for (Note note : notes) {</span>
+<span class="fc" id="L123">            String clearNote = removeDiacriticalMarks(note.getNote().toUpperCase().trim());</span>
+<span class="fc" id="L124">            Stream.of(triggerTerms).forEach(triggerTerm -&gt; {</span>
+
+<span class="pc bpc" id="L126" title="1 of 2 branches missed.">                if (clearNote.contains(triggerTerm.toUpperCase().trim())) {</span>
+<span class="nc" id="L127">                    countTerms.getAndSet(countTerms.get() + 1);</span>
+                }
+
+<span class="fc" id="L130">            });</span>
+<span class="fc" id="L131">        }</span>
+<span class="fc" id="L132">        return countTerms;</span>
+    }
+
+    /**
+     * Remove accents from string
+     *
+     * @param string note
+     * @return clean string
+     */
+    private static String removeDiacriticalMarks(String string) {
+<span class="fc" id="L142">        return Normalizer.normalize(string, Normalizer.Form.NFD)</span>
+<span class="fc" id="L143">                .replaceAll(&quot;\\p{InCombiningDiacriticalMarks}+&quot;, &quot;&quot;);</span>
+    }
+
+    /**
+     * Build report message
+     *
+     * @param firstName first name
+     * @param lastName  last name
+     * @param age       age of patient
+     * @param status    status of illness
+     * @return string with message composed
+     */
+    private String buildMessage(String firstName, String lastName, int age, ReportStatus status) {
+<span class="fc" id="L156">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L157">        sb.append(&quot;Patient: &quot;);</span>
+<span class="fc" id="L158">        sb.append(firstName);</span>
+<span class="fc" id="L159">        sb.append(&quot; &quot;);</span>
+<span class="fc" id="L160">        sb.append(lastName);</span>
+<span class="fc" id="L161">        sb.append(&quot; (age &quot;);</span>
+<span class="fc" id="L162">        sb.append(age);</span>
+<span class="fc" id="L163">        sb.append(&quot;) diabetes assessment is: &quot;);</span>
+<span class="fc" id="L164">        sb.append(status.getText());</span>
+<span class="fc" id="L165">        String s = sb.toString();</span>
+<span class="fc" id="L166">        return s;</span>
+    }
+
+    /**
+     * Get status report by trigger terms
+     *
+     * @param patient patient object
+     * @param count   count of trigger terms
+     * @return report object
+     */
+    public Report getReport(Patient patient, int count) {
+
+<span class="fc" id="L178">        boolean isMale = isPatientMale(patient.getSex());</span>
+<span class="fc" id="L179">        int age = calculateAge(patient.getBirthDate());</span>
+<span class="fc" id="L180">        ReportStatus status = ReportStatus.NONE;</span>
+        // borderline
+<span class="pc bpc" id="L182" title="1 of 6 branches missed.">        if (age &gt; 30 &amp;&amp; (count &gt;= 2 &amp;&amp; count &lt; 6)) {</span>
+<span class="fc" id="L183">            status = ReportStatus.BORDERLINE;</span>
+        }
+        // danger
+<span class="pc bpc" id="L186" title="8 of 22 branches missed.">        else if ((isMale &amp;&amp; age &lt; 30 &amp;&amp; (count == 3 || count == 4)) || (!isMale &amp;&amp; age &lt; 30 &amp;&amp; (count &gt;= 4 &amp;&amp; count &lt;= 6)) || (age &gt; 30 &amp;&amp; (count == 6 || count == 7))) {</span>
+<span class="fc" id="L187">            status = ReportStatus.IN_DANGER;</span>
+        }
+        // early onset
+<span class="pc bpc" id="L190" title="6 of 16 branches missed.">        else if ((isMale &amp;&amp; age &lt; 30 &amp;&amp; count == 5) || (!isMale &amp;&amp; age &lt; 30 &amp;&amp; count &gt;= 7) || (age &gt; 30 &amp;&amp; count &gt;= 8)) {</span>
+<span class="fc" id="L191">            status = ReportStatus.EARLY_ONSET;</span>
+        }
+
+<span class="fc" id="L194">        String message = buildMessage(patient.getFirstName(), patient.getLastName(), age, status);</span>
+<span class="fc" id="L195">        Report report = new Report();</span>
+<span class="fc" id="L196">        report.setMessage(message);</span>
+<span class="fc" id="L197">        report.setStatus(status);</span>
+<span class="fc" id="L198">        report.setTriggerTermsCount(count);</span>
+<span class="fc" id="L199">        logger.info(message);</span>
+<span class="fc" id="L200">        return report;</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NoteServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">report</a> &gt; <a href="index.source.html" class="el_package">com.abernathy.report.services</a> &gt; <span class="el_source">NoteServiceImpl.java</span></div><h1>NoteServiceImpl.java</h1><pre class="source lang-java linenums">package com.abernathy.report.services;
+
+import com.abernathy.report.model.Note;
+import com.abernathy.report.proxies.NoteProxy;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+<span class="fc" id="L13">public class NoteServiceImpl implements NoteService {</span>
+
+<span class="fc" id="L15">    static final Logger logger = LogManager</span>
+<span class="fc" id="L16">            .getLogger(NoteServiceImpl.class);</span>
+
+    @Autowired
+    NoteProxy noteProxy;
+
+    /**
+     * Get all notes by patient id
+     *
+     * @param patientId id of patient
+     * @return list of patients notes
+     */
+    @Override
+    public List&lt;Note&gt; getNotesByPatientId(Integer patientId) {
+        try {
+<span class="fc" id="L30">            return noteProxy.getNotesByPatientId(patientId);</span>
+
+<span class="nc" id="L32">        } catch (Exception e) {</span>
+<span class="nc" id="L33">            logger.info(e.toString());</span>
+        }
+<span class="nc" id="L35">        return null;</span>
+    }
+
+    /**
+     * Get note
+     *
+     * @param id note id
+     * @return note object
+     */
+    @Override
+    public Note getNote(String id) {
+<span class="fc" id="L46">        return noteProxy.getNote(id);</span>
+    }
+
+    /**
+     * Add note
+     *
+     * @param note note object
+     * @return true when success
+     */
+    @Override
+    public boolean addNote(Note note) {
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        if (noteProxy.addNote(note)) {</span>
+<span class="fc" id="L58">            return true;</span>
+
+        }
+<span class="fc" id="L61">        return false;</span>
+    }
+
+    /**
+     * Update note
+     *
+     * @param note note object
+     * @return true when success
+     */
+    @Override
+    public boolean updateNote(Note note) {
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        if (noteProxy.updateNote(note)) {</span>
+
+<span class="fc" id="L74">            return true;</span>
+
+        }
+<span class="fc" id="L77">        return false;</span>
+    }
+
+    /**
+     * Delete note
+     *
+     * @param id note object
+     * @return true when success
+     */
+    @Override
+    public boolean deleteNote(String id) {
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        if (noteProxy.deleteNote(id)) {</span>
+<span class="fc" id="L89">            return true;</span>
+        }
+<span class="fc" id="L91">        return false;</span>
+    }
+
+    /**
+     * Delete notes by patient id
+     *
+     * @param patientId patient id
+     * @return true when success
+     */
+    @Override
+    public boolean deleteNotesByPatientId(Integer patientId) {
+
+        try {
+<span class="fc" id="L104">            List&lt;Note&gt; notes = noteProxy.getNotesByPatientId(patientId);</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">            if (!notes.isEmpty()) {</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">                for (Note note : notes) {</span>
+<span class="fc" id="L107">                    noteProxy.deleteNote(note.getId());</span>
+<span class="fc" id="L108">                }</span>
+<span class="fc" id="L109">                return true;</span>
+            }
+
+<span class="fc" id="L112">        } catch (Exception e) {</span>
+<span class="fc" id="L113">            logger.info(e.toString());</span>
+<span class="fc" id="L114">        }</span>
+
+<span class="fc" id="L116">        return false;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

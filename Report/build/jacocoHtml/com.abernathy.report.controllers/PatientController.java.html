@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PatientController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">report</a> &gt; <a href="index.source.html" class="el_package">com.abernathy.report.controllers</a> &gt; <span class="el_source">PatientController.java</span></div><h1>PatientController.java</h1><pre class="source lang-java linenums">package com.abernathy.report.controllers;
+
+import com.abernathy.report.model.Patient;
+import com.abernathy.report.services.NoteService;
+import com.abernathy.report.services.PatientService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.validation.Valid;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+@Controller
+public class PatientController {
+
+<span class="fc" id="L25">    static final Logger logger = LogManager</span>
+<span class="fc" id="L26">            .getLogger(PatientController.class);</span>
+
+    // initialize objects
+    PatientService patientService;
+    NoteService noteService;
+
+
+    /**
+     * Field injection of patient service
+     *
+     * @param patientService patient service
+     */
+    @Autowired
+<span class="fc" id="L39">    public PatientController(PatientService patientService, NoteService noteService) {</span>
+<span class="fc" id="L40">        this.patientService = patientService;</span>
+<span class="fc" id="L41">        this.noteService = noteService;</span>
+<span class="fc" id="L42">    }</span>
+
+
+    /**
+     * Get all patients
+     *
+     * @param model model of view
+     * @return List of patients
+     */
+    @RequestMapping(&quot;/patient/list&quot;)
+    public String home(Model model) {
+<span class="fc" id="L53">        DateFormat format = new SimpleDateFormat(&quot;yyyy/MM/dd HH:mm:ss&quot;);</span>
+<span class="fc" id="L54">        Calendar calendar = Calendar.getInstance();</span>
+        // call depository find all bids to show to the view
+<span class="fc" id="L56">        model.addAttribute(&quot;patients&quot;, patientService.getPatients());</span>
+
+<span class="fc" id="L58">        logger.info((&quot;Is connected at &quot;</span>
+<span class="fc" id="L59">                + format.format(calendar.getTime())));</span>
+
+<span class="fc" id="L61">        return &quot;patient/list&quot;;</span>
+    }
+
+    /**
+     * Add patient form
+     *
+     * @param patient empty patient object
+     * @return Empty form
+     */
+    @GetMapping(&quot;/patient/add&quot;)
+    public String addPatientForm(Patient patient) {
+<span class="fc" id="L72">        return &quot;patient/add&quot;;</span>
+    }
+
+    /**
+     * Add patient
+     *
+     * @param patient patient object
+     * @param result  when validation goes wrong result
+     * @param model   model of view
+     * @return when success list of patient if not add form
+     */
+    @PostMapping(&quot;/patient/validate&quot;)
+    public String validate(@Valid Patient patient, BindingResult result, Model model) {
+        // check data valid and save to db, after saving return bid list
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if (!result.hasErrors()) {</span>
+<span class="fc" id="L87">            patientService.addPatient(patient);</span>
+<span class="fc" id="L88">            model.addAttribute(&quot;patients&quot;, patientService.getPatients());</span>
+<span class="fc" id="L89">            return &quot;redirect:/patient/list&quot;;</span>
+        }
+<span class="fc" id="L91">        return &quot;patient/add&quot;;</span>
+    }
+
+    /**
+     * Update patient form
+     *
+     * @param id    id of patient to update
+     * @param model model of view
+     * @return form with patient to update
+     */
+    @GetMapping(&quot;/patient/update/{id}&quot;)
+    public String showUpdateForm(@PathVariable(&quot;id&quot;) Integer id, Model model) {
+        // get patient by Id and to model then show to the form
+<span class="fc" id="L104">        Patient patient = patientService.getPatient(id);</span>
+
+<span class="fc" id="L106">        model.addAttribute(&quot;patient&quot;, patient);</span>
+
+<span class="fc" id="L108">        return &quot;patient/update&quot;;</span>
+    }
+
+    /**
+     * Update patient
+     *
+     * @param id      id of patient to update
+     * @param patient patient object
+     * @param result  when validation goes wrong result
+     * @param model   model of view
+     * @return when success list of patient if not update form
+     */
+    @PostMapping(&quot;/patient/update/{id}&quot;)
+    public String updatePatient(@PathVariable(&quot;id&quot;) Integer id, @Valid Patient patient,
+                                BindingResult result, Model model) {
+        //  check required fields, if valid call service to update Bid and return list Bid
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        if (result.hasErrors()) {</span>
+<span class="fc" id="L125">            return &quot;patient/update&quot;;</span>
+        }
+
+<span class="fc" id="L128">        patient.setId(id);</span>
+<span class="fc" id="L129">        patientService.addPatient(patient);</span>
+<span class="fc" id="L130">        model.addAttribute(&quot;patients&quot;, patientService.getPatients());</span>
+
+<span class="fc" id="L132">        return &quot;redirect:/patient/list&quot;;</span>
+    }
+
+    /**
+     * Delete patient
+     *
+     * @param id    id of patient to delete
+     * @param model model of view
+     * @return list of patient when success
+     */
+    @GetMapping(&quot;/patient/delete/{id}&quot;)
+    public String deletePatient(@PathVariable(&quot;id&quot;) Integer id, Model model) {
+        // Find patient by Id and delete the patient, return to patient list
+<span class="fc" id="L145">        Patient patient = patientService.getPatient(id);</span>
+<span class="fc" id="L146">        patientService.deletePatient(patient.getId());</span>
+<span class="fc" id="L147">        noteService.deleteNotesByPatientId(patient.getId());</span>
+<span class="fc" id="L148">        model.addAttribute(&quot;patients&quot;, patientService.getPatients());</span>
+<span class="fc" id="L149">        return &quot;redirect:/patient/list&quot;;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
