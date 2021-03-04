@@ -41,7 +41,6 @@ Patient app serves to manage patients files
 ## Database - SQL 
 
 - **Microservice Patient**: <br/>
-  **schema.sql** (available in *"/src/main/resources"*) contains scrypt SQL to create patients database
   **data.sql** (available in *"/src/main/resources"*) contains scrypt SQL to populate patients database
 
 ## To run microservice on:

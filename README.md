@@ -57,7 +57,6 @@ Abernathy Services is composed of 3 microservices:
 ## Databases - SQL & NOSQL
 
 - **Microservice Patient**: <br/>
-  **schema.sql** (available in *"/src/main/resources"*) contains scrypt SQL to create patients database
   **data.sql** (available in *"/src/main/resources"*) contains scrypt SQL to populate patients database
 
 - **Microservice Notes**:  <br/>
