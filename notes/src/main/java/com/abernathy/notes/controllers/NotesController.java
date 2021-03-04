@@ -94,7 +94,8 @@ public class NotesController {
         if (!notesService.deleteNote(id)) {
             logger.error("DELETE note -> deleteNote /**/ Result : " + HttpStatus.NOT_FOUND
                     + " /**/ Message : This note don't exist : '{}'.", id.toString());
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This note don't exist");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "This note don't exist");
         }
         logger.info("DELETE note -> deleteNote /**/ HttpStatus : " + HttpStatus.OK);
         return true;
