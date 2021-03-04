@@ -44,7 +44,7 @@ public class PatientIT {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
     }
 
-    @Test
+    //@Test
     public void addUser() throws Exception {
         Patient patient = new Patient();
         patient.setFirstName("Piotr");
