@@ -1,22 +1,16 @@
 package com.abernathy.patient.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
-//@Data
 @Getter
 @Setter
 @ToString
@@ -39,14 +33,13 @@ public class Patient {
     @Size(max = 30, message = "First Name should be maximum 30 characters")
     String lastName;
 
-    @JsonFormat(pattern="dd-MM-yyyy")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     @NotNull(message = "Birth date is mandatory")
     private LocalDate birthDate;
 
     @NotNull(message = "sex is mandatory")
     private PatientSex sex;
 
-    @Column(length = 255)
     @Size(max = 255, message = "Address should be maximum 255 characters")
     String address;
 

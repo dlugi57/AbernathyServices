@@ -146,7 +146,6 @@ public class PatientController {
         patientService.deletePatient(patient.getId());
         noteService.deleteNotesByPatientId(patient.getId());
         model.addAttribute("patients", patientService.getPatients());
-        // TODO: 24/02/2021 delete all of notes  
         return "redirect:/patient/list";
     }
 
