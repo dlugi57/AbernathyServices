@@ -35,7 +35,7 @@ services:
 
     restart: always
 
-  petient:
+  patient:
     build:
       context: ./patient/
       dockerfile: Dockerfile
@@ -49,7 +49,7 @@ services:
   report:
     environment:
       - NOTE_BASE_URL=http://notes:8086
-      - PATIENT_BASE_URL=http://petient:8084
+      - PATIENT_BASE_URL=http://patient:8084
     build:
       context: ./report/
       dockerfile: Dockerfile
@@ -60,9 +60,10 @@ services:
 
     depends_on:
       - notes
-      - petient
+      - patient
 
     restart: always
+
 volumes:
   database-volume:
   mongo-volume:
