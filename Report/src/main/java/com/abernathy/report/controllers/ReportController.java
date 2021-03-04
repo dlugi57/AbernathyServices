@@ -45,7 +45,7 @@ public class ReportController {
             logger.error("GET report -> getReportByPatientId /**/ HttpStatus : " + HttpStatus.NOT_FOUND + " " +
                     "/**/ Message :  patient id " + patId + " is wrong");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "Wrong patient: " + report);
+                    "Wrong patient: " + patId);
         }
 
         logger.info("GET report -> getReportByPatientId /**/ HttpStatus : " + HttpStatus.OK + " " +

@@ -19,9 +19,6 @@ public class ReportServiceImpl implements ReportService {
     static final Logger logger = LogManager
             .getLogger(ReportServiceImpl.class);
 
-    private static Patient patient;
-
-    private static List<Note> notes;
 
     /**
      * List of trigger terms
@@ -68,7 +65,7 @@ public class ReportServiceImpl implements ReportService {
                     removeDiacriticalMarks(patient.getLastName().toUpperCase().trim());
             String cleanComparePatient = removeDiacriticalMarks(patientLastName.toUpperCase().trim());
 
-            if (cleanPatient.equals(cleanComparePatient) ) {
+            if (cleanPatient.equals(cleanComparePatient)) {
                 List<Note> notes = noteService.getNotesByPatientId(patient.getId());
 
                 if ((notes != null && !notes.isEmpty()) && patient != null) {
@@ -88,13 +85,13 @@ public class ReportServiceImpl implements ReportService {
      * @return report object
      */
     public Report calculateReport(Patient patient, List<Note> notes) {
-
-        if (patient == null ||  notes == null) {
+        logger.info("Start calculation");
+        if (patient == null || notes == null) {
             return null;
         }
-if (notes.isEmpty()){
-    return null;
-}
+        if (notes.isEmpty()) {
+            return null;
+        }
 
         int triggerTermsCount = countTriggerTerms(notes).get();
 
@@ -199,7 +196,7 @@ if (notes.isEmpty()){
         report.setMessage(message);
         report.setStatus(status);
         report.setTriggerTermsCount(count);
-
+        logger.info(message);
         return report;
     }
 

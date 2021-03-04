@@ -4,10 +4,8 @@ package com.abernathy.report.controllers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.security.Principal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,18 +18,17 @@ public class HomeController {
 
     /**
      * Home page
-     * @param model model of view
+     *
      * @return home page
      */
     @RequestMapping("/")
-    public String home(Model model) {
+    public String home() {
         DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar calendar = Calendar.getInstance();
         logger.info(("You are connected at "
                 + format.format(calendar.getTime())));
         return "home";
     }
-
 
 
 }

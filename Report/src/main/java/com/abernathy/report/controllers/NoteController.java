@@ -57,7 +57,7 @@ public class NoteController {
         // get patient by Id and to model then show to the form
         List<Note> notes = noteService.getNotesByPatientId(id);
         Patient patient = patientService.getPatient(id);
-        Report report = reportService.calculateReport(patient,notes);
+        Report report = reportService.calculateReport(patient, notes);
 
         model.addAttribute("report", report);
         model.addAttribute("patient", patient);
@@ -151,7 +151,7 @@ public class NoteController {
      */
     @PostMapping("/note/update/{id}")
     public String updateNote(@PathVariable("id") String id, @Valid Note note,
-                                BindingResult result, Model model) {
+                             BindingResult result, Model model) {
         //  check required fields, if valid call service to update Bid and return list Bid
         if (result.hasErrors()) {
             return "note/update";
