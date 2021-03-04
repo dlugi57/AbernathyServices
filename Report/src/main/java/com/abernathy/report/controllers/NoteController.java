@@ -57,10 +57,8 @@ public class NoteController {
         // get patient by Id and to model then show to the form
         List<Note> notes = noteService.getNotesByPatientId(id);
         Patient patient = patientService.getPatient(id);
-
         Report report = reportService.calculateReport(patient,notes);
 
-        // TODO: 01/03/2021 is enough to add this only to this controller
         model.addAttribute("report", report);
         model.addAttribute("patient", patient);
         model.addAttribute("notes", notes);

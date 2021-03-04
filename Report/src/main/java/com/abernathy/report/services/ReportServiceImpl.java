@@ -89,9 +89,12 @@ public class ReportServiceImpl implements ReportService {
      */
     public Report calculateReport(Patient patient, List<Note> notes) {
 
-        if (patient == null && notes.isEmpty()) {
+        if (patient == null ||  notes == null) {
             return null;
         }
+if (notes.isEmpty()){
+    return null;
+}
 
         int triggerTermsCount = countTriggerTerms(notes).get();
 

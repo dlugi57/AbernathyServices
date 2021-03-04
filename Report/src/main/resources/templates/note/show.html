@@ -33,7 +33,7 @@
     <h2 class="text-center mt-5 mb-5" th:text="${patient.firstName} + ' ' + ${patient.lastName}">
     </h2>
 
-    <div class="row">
+    <div  th:if="${report != null}" class="row">
         <div class="col-md-12" th:switch="${report.status.toString()}">
 
             <div th:case="'NONE'" class="card text-white bg-success mb-3">
