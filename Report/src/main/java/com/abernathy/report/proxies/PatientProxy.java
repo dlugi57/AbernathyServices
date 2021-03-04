@@ -9,7 +9,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 
-@FeignClient(name = "patient", url = "${CLIENT_REWARDS_BASE_URL:http://localhost:8084}")
+@FeignClient(name = "patient", url = "${PATIENT_BASE_URL:http://localhost:8084}")
 public interface PatientProxy {
 
     /**
